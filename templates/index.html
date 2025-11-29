@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Nhóm 14-Phường Lĩnh Nam</title>
+
+    <!-- Font chữ hiện đại -->
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI&display=swap" rel="stylesheet">
+
+    <!-- Gắn style.css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- Leaflet CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Leaflet Control Geocoder -->
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+</head>
+
+<body>
+    <div id="sidebar">
+        <div id="controls">
+            <p>Click vào bản đồ để chọn điểm xuất phát và điểm kết thúc.</p>
+        
+            <label for="vehicle">Phương tiện:</label>
+            <select id="vehicle">
+                <option value="car" selected>Ô tô</option>
+                <option value="motor">Xe máy</option>
+                <option value="foot">Đi bộ</option>
+            </select>
+
+            <div id="conditionOptions">
+                <div class="condition-box thongthoang" data-condition="normal" title="Đường thông thoáng, an toàn">Thông thoáng</div>
+                <div class="condition-box tacnghen" data-condition="jam" title="Đường tắc nghẽn, chậm trễ">Tắc nghẽn</div>
+                <div class="condition-box ngapung" data-condition="flooded" title="Đường bị ngập lụt, nguy hiểm">Ngập úng</div>
+                <div class="condition-box camluuthong" data-condition="not allowed" title="Đường cấm lưu thông">Cấm lưu thông</div>
+                <div class="condition-box suachua" data-condition="construction" title="Đường đang sửa chữa">Đang sửa chữa</div>
+            </div>
+              
+            <label for="algorithm">Thuật toán:</label>
+            <select id="algorithm">
+                <option value="dijkstra">Dijkstra</option>
+                <option value="a_star">A*</option>
+                <option value="greedy">Greedy Best-First</option>
+                <option value="bidirectional_dijkstra">Bidirectional Dijkstra</option>
+                <option value="bfs">Breadth-First Search</option>
+                <option value="dfs">Depth-First Search</option>
+            </select>
+
+            <button id="addCondition" onclick="addCondition()">Thêm trạng thái</button>
+            <button onclick="findRoute()">Tìm đường</button>
+            <button onclick="clearRoute()">Xóa đường</button>
+        </div>
+
+        <div id="route-result">
+            <p id="total_length"></p>
+            <p id="total_travel_time"></p>
+        </div>
+    </div>
+
+    <div id="map"></div>
+
+    <!-- JS của bạn -->
+    <script src="{{ url_for('static', filename='js/map.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/condition.js') }}"></script>
+</body>
+</html>

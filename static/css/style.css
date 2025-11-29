@@ -1,0 +1,123 @@
+/* Cho toàn bộ body/html full screen */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Sidebar bên trái */
+#sidebar {
+    width: 300px;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: #f4f4f4;
+    padding: 10px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+/* Bản đồ dịch sang phải */
+#map {
+    margin-left: 300px;
+    height: 100%;
+    z-index: 1;
+}
+
+/* Control panel trong sidebar */
+#controls {
+    background-color: white;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    margin-bottom: 20px;
+}
+
+/* Phần còn lại giữ nguyên phong cách của bạn */
+#controls p {
+    margin-top: 0;
+    font-weight: 600;
+}
+
+#controls label {
+    font-weight: bold;
+    margin-top: 10px;
+    display: block;
+}
+
+#controls select,
+#controls button {
+    width: 100%;
+    padding: 8px;
+    margin: 6px 0 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease-in-out;
+}
+
+#controls button {
+    background-color: #4285f4;
+    color: white;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#controls button:hover {
+    background-color: #3367d6;
+}
+
+/* Box điều kiện */
+.condition-box {
+    flex: 1 1 45%;
+    text-align: center;
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background: #f0f0f0;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background 0.2s, transform 0.2s;
+    user-select: none;
+}
+
+.condition-box:hover {
+    background-color: #e0e0e0;
+    transform: translateY(-2px);
+}
+
+.condition-box.thongthoang   { background-color: #c8e6c9; }
+.condition-box.tacnghen      { background-color: #ffab91; }
+.condition-box.ngapung  { background-color: #42a5f5; }
+.condition-box.camluuthong { background-color: #d32f2f; }
+.condition-box.suachua { background-color: #bdbdbd; }
+
+/* Kết quả tìm đường trong sidebar */
+#route-result {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    padding: 12px 18px;
+    text-align: left;
+}
+
+#total_length, #total_travel_time {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 10px 0;
+    color: #333;
+}
+
+/* Tăng kích thước ô tìm kiếm */
+.leaflet-control-geocoder input {
+    width: 250px !important;
+    font-size: 16px !important;
+    padding: 8px !important;
+}
+
