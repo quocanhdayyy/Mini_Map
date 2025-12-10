@@ -24,6 +24,9 @@ def finalize_conditions():
 
     if not vehicle:
         return jsonify({"status": "error", "message": "Thiếu phương tiện"}), 400
+    
+    print(f"[finalize_conditions] condition_cache hiện tại: {condition_cache}")
+    
     try:
         with open(VHC_ALLOWED_FILE, 'r', encoding='utf-8') as f:
             geojson_data = json.load(f)
@@ -35,7 +38,15 @@ def finalize_conditions():
         for feature in geojson_data['features']:
             props = feature['properties']
             highway = props.get('highway', '')
-            condition_feature = condition_cache.get(str(props.get('id')), "normal")
+            
+            # ✅ Handle cả @id và id
+            feature_id = props.get('id') or props.get('@id') or ''
+            feature_id_str = str(feature_id)
+            
+            # Lấy condition từ cache, mặc định là "normal"
+            condition_feature = condition_cache.get(feature_id_str, "normal")
+            print(f"[finalize] Feature {feature_id_str}: condition = {condition_feature}")
+            
             geometry = feature['geometry']
 
             coords_list = []
@@ -53,9 +64,9 @@ def finalize_conditions():
                     p2 = line_coords[i + 1]
 
                     segment_length = calculate_distance(p1, p2)
-                    edge_id = f"{props.get('id')}_{i}"  # tạo id đoạn nhỏ riêng biệt
+                    edge_id = f"{feature_id_str}_{i}"  # ✅ Dùng feature_id_str đã xử lý @id
 
-                    # Lấy điều kiện cho đoạn này (nếu muốn, có thể dùng condition của feature)
+                    # Lấy điều kiện cho đoạn này
                     condition = condition_feature
 
                     weight, speed_used, _ = update_weight_file(edge_id, segment_length, condition, highway, vehicle, condition_cache)

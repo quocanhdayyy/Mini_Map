@@ -39,10 +39,23 @@ def find_route():
     algorithm = data.get("algorithm", "dijkstra")  # Mặc định dùng Dijkstra
 
     # ✅ Load graph đã build từ weights.geojson
-    G = load_graph(GRAPH_PATH)
+    try:
+        G = load_graph(GRAPH_PATH)
+    except FileNotFoundError:
+        return jsonify({"error": "Graph chưa được build. Hãy chọn phương tiện trước."}), 400
 
+    # Tìm node gần nhất, thử với direction_check trước, nếu không được thì bỏ
     orig_node = get_nearest_node(G, start_lat, start_lng, direction_check=True, goal_lat=end_lat, goal_lon=end_lng)
+    if orig_node is None:
+        orig_node = get_nearest_node(G, start_lat, start_lng, direction_check=False)
+    
     dest_node = get_nearest_node(G, end_lat, end_lng, direction_check=True, goal_lat=start_lat, goal_lon=start_lng)
+    if dest_node is None:
+        dest_node = get_nearest_node(G, end_lat, end_lng, direction_check=False)
+
+    # ✅ Check nếu không tìm được node
+    if orig_node is None or dest_node is None:
+        return jsonify({"error": "Không tìm được điểm gần nhất trên bản đồ. Hãy chọn điểm khác."}), 400
 
     result = find_shortest_path(G, orig_node, dest_node, vehicle, algorithm)
 

@@ -14,10 +14,11 @@ def build_graph_from_geojson(geojson_file, snap_threshold=1):
     G = nx.DiGraph()
     banned_nodes = set()
 
-    for feature in data["features"]:
+    for idx, feature in enumerate(data["features"]):
         geometry = feature.get("geometry", {})
         props = feature.get("properties", {})
-        edge_id = props.get("id")
+        # ✅ Handle cả @id và id
+        edge_id = props.get("id") or props.get("@id") or f"edge_{idx}"
         highway = props.get("highway", "")
         condition = props.get("condition", "normal")
         speed = props.get("speed", None)
@@ -36,16 +37,14 @@ def build_graph_from_geojson(geojson_file, snap_threshold=1):
             continue
 
         for line in coords_list:
-            # Xử lý đoạn cấm (not allowed)
-            if condition == "not allowed":
-                if len(line) > 2:
-                    for pt in line[1:-1]:  # loại node giữa
-                        banned_nodes.add(tuple(pt))
-                continue
-
             for i in range(len(line) - 1):
                 x1, y1 = line[i]
                 x2, y2 = line[i + 1]
+
+                # ✅ Nếu đường bị cấm, KHÔNG thêm edge vào graph
+                if condition == "not allowed":
+                    print(f"[graph] Bỏ qua edge cấm: {edge_id}_{i}")
+                    continue
 
                 G.add_node((x1, y1), x=x1, y=y1)
                 G.add_node((x2, y2), x=x2, y=y2)
@@ -55,9 +54,9 @@ def build_graph_from_geojson(geojson_file, snap_threshold=1):
                 travel_time, speed_used, _ = compute_weight(segment_length, highway, vehicle, condition)
 
                 edge_attrs = {
-                    "weight": travel_time,  # Nếu bạn muốn dùng lại weight thì cần tính lại
+                    "weight": travel_time,
                     "length": segment_length,
-                    "id": f"{edge_id}_{i}",  # tạo id segment riêng
+                    "id": f"{edge_id}_{i}",
                     "highway": highway,
                     "condition": condition,
                     "speed": speed_used,
@@ -67,7 +66,8 @@ def build_graph_from_geojson(geojson_file, snap_threshold=1):
                 G.add_edge((x1, y1), (x2, y2), **edge_attrs)
                 G.add_edge((x2, y2), (x1, y1), **edge_attrs)
 
-    G.remove_nodes_from(banned_nodes)
+    # ✅ Xóa bỏ logic banned_nodes vì đã xử lý bằng weight = inf
+    # G.remove_nodes_from(banned_nodes)
 
     print(f"Đã xây dựng graph: {len(G.nodes)} nodes, {len(G.edges)} edges")
     return G
