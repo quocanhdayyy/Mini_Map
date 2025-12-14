@@ -23,17 +23,11 @@ def compute_weight(length, highway, vehicle, condition):
 
     return round(travel_time, 5), round(speed_used, 1), condition
 
-def update_weight_file(edge_id, length, condition, highway, vehicle, weights):
-    # Tính trọng số, tốc độ sử dụng và condition từ condition_cache
+def update_weight_file(edge_id, length, condition, highway, vehicle, weights=None):
+    """
+    Tính trọng số cho một edge.
+    Lưu ý: Hàm này KHÔNG ghi vào condition_cache nữa.
+    weights parameter giữ lại để tương thích nhưng không dùng.
+    """
     weight, speed_used, condition = compute_weight(length, highway, vehicle, condition)
-
-    weights[edge_id] = {
-        "vehicle": vehicle,
-        "highway": highway,
-        "length": length,
-        "condition": condition,
-        "speed": speed_used,
-        "weight": weight
-    }
-
     return weight, speed_used, condition

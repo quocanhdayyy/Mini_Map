@@ -1,6 +1,7 @@
 import shutil
 from pathlib import Path
 import hashlib
+from config import BASE_DIR
 
 def hash_file(path: Path) -> str:
     h = hashlib.sha256()
@@ -13,8 +14,8 @@ def hash_file(path: Path) -> str:
         return ''
 
 def sync_geojson_file(filename: str, force: bool = False):
-    src = Path('data/geojson') / filename
-    dst = Path('static/geojson') / filename
+    src = BASE_DIR / 'data/geojson' / filename
+    dst = BASE_DIR / 'static/geojson' / filename
 
     if not src.exists():
         print(f"[sync_geojson] [ERROR] Khong tim thay: {src}")

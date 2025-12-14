@@ -43,34 +43,53 @@ function updateAllowedRoutes() {
 // Hàm xử lý khi người dùng nhấn vào đoạn đường
 function onEachFeature(feature, layer) {
   layer.on('click', function (e) {
-      if (!isAddingCondition) return;
+      // ✅ Ngăn event lan lên map
+      L.DomEvent.stopPropagation(e);
+      
+      if (!isAddingCondition) {
+          console.log("Chế độ thêm trạng thái chưa bật. Hãy bấm 'Thêm trạng thái' trước.");
+          return;
+      }
+      
       selectedFeature = feature;  // Lưu lại feature (đoạn đường) người dùng chọn
+      
+      // ✅ Handle cả @id và id
+      const edge_id = feature.properties.id || feature.properties['@id'] || 'unknown';
+      console.log("Đã chọn đoạn đường:", edge_id, feature.properties);
+
+      // Highlight đoạn đường được chọn
+      layer.setStyle({ color: "yellow", weight: 6, opacity: 1 });
 
       // Hiển thị bảng trạng thái
-    document.getElementById('conditionOptions').style.display = 'grid';
+      document.getElementById('conditionOptions').style.display = 'grid';
+      
       // Gán sự kiện click cho từng ô trạng thái
-    document.querySelectorAll('.condition-box').forEach(box => {
-      box.onclick = function () {
-        const condition = this.dataset.condition;
-        const edge_id = String(selectedFeature.properties.id);  // Đảm bảo edge_id là string
+      document.querySelectorAll('.condition-box').forEach(box => {
+        box.onclick = function () {
+          const condition = this.dataset.condition;
+          // ✅ Handle cả @id và id
+          const selected_edge_id = String(selectedFeature.properties.id || selectedFeature.properties['@id'] || 'unknown');
 
-        // ✅ Cập nhật vào biến toàn cục
-        condition_cache[edge_id] = condition;
+          // ✅ Cập nhật vào biến toàn cục
+          condition_cache[selected_edge_id] = condition;
+          console.log(`Cập nhật condition_cache[${selected_edge_id}] = ${condition}`);
 
-        // ✅ Gửi về backend để lưu tạm
-        updateCondition(String(edge_id), condition);
-        let color = "#c8e6c9";
-        if (condition === "normal") color = "#c8e6c9"; 
-        else if (condition === "jam") color = "#ffab91";
-        else if (condition === "flooded") color = "#42a5f5";
-        else if (condition === "not allowed") color = "#d32f2f";
-        else if (condition === "construction") color = "#bdbdbd";
-        layer.setStyle({ color: color, weight: 5, opacity: 1 });
+          // ✅ Gửi về backend để lưu tạm
+          updateCondition(selected_edge_id, condition);
+          
+          let color = "#c8e6c9";
+          if (condition === "normal") color = "#c8e6c9"; 
+          else if (condition === "jam") color = "#ffab91";
+          else if (condition === "flooded") color = "#42a5f5";
+          else if (condition === "not allowed") color = "#d32f2f";
+          else if (condition === "construction") color = "#bdbdbd";
+          layer.setStyle({ color: color, weight: 5, opacity: 1 });
 
-        document.getElementById('conditionOptions').style.display = 'none';
-      };
+          document.getElementById('conditionOptions').style.display = 'grid';
+          console.log(`Đã gán condition '${condition}' cho edge ${edge_id}`);
+        };
+      });
   });
-});
 }
 
 // Gửi yêu cầu tới API để cập nhật trạng thái vào condition_cache

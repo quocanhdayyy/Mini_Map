@@ -72,6 +72,18 @@ html, body {
     background-color: #3367d6;
 }
 
+/* Container box điều kiện */
+#conditionOptions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin: 10px 0;
+    padding: 10px;
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
 /* Box điều kiện */
 .condition-box {
     flex: 1 1 45%;

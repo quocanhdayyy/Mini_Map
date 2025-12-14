@@ -58,8 +58,9 @@ coverage.xml
 .pytest_cache/
 cover/
 
-cache/
-**/cache
+# Cache folder - keep source files, ignore runtime data
+cache/condition_data.json
+cache/__pycache__/
 
 # Translations
 *.mo
@@ -304,8 +305,16 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-#Static geojson
+#Static geojson (synced from data/)
 static/geojson/*.geojson
 !static/geojson/.gitkeep
 
+# Graph pickle (built at runtime)
 data/graph/*.pkl
+!data/graph/.gitkeep
+
+# macOS
+.DS_Store
+
+# Test output
+test_condition.py
