@@ -1,6 +1,6 @@
 # Mini_Map
 
-Web Flask tìm đường đi ngắn nhất trên bản đồ phường Thịnh Quang bằng nhiều thuật toán, sử dụng Leaflet.js.
+Web Flask tìm đường đi ngắn nhất trên bản đồ phường Lĩnh Nam bằng nhiều thuật toán, sử dụng Leaflet.js.
 
 ## Tính năng
 
